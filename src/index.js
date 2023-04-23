@@ -7,9 +7,30 @@ const app = new App({
   // appToken: process.env.APP_TOKEN
 });
 
-const appHome = require("./views/app_home");
+const deploy = require("./commands/deploy");
 const help = require("./commands/help");
+
+const appHome = require("./views/app_home");
 const buttonAbc = require("./buttons/button_abc");
+
+// This will match any message that contains 👋
+app.message(":wave:", async ({ message, say }) => {
+  await say(`Hello, <@${message.user}>`);
+});
+
+// Listen for a slash command invocation
+app.message(
+  /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i,
+  async ({ context, say }) => {
+    say("Deploy request received!");
+    say(`${context}`);
+    const sourceBranch = context.match[0];
+    const targetBranch = context.match[2];
+    const owner = context.match[3] || process.env.GITHUB_OWNER;
+    const repo = context.match[4] || process.env.GITHUB_REPO;
+    deploy({ sourceBranch, targetBranch, owner, repo, say });
+  }
+);
 
 // Listen for users opening App Home
 app.event("app_home_opened", async ({ event, client, context }) => {
