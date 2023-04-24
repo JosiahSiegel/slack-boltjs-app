@@ -13,3 +13,6 @@
 Tips:
 
 - Check vulnerabilities: `npm audit`
+- Fix Glitch out of sync with repo:
+  - Open terminal and `git pull`
+  - Run `refresh` to sync editor with terminal
