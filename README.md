@@ -14,5 +14,9 @@ Tips:
 
 - Check vulnerabilities: `npm audit`
 - Fix Glitch out of sync with repo:
-  - Open terminal and `git pull`
-  - Run `refresh` to sync editor with terminal
+  - `git pull`
+  - `refresh`
+- Hard refresh Glitch from repo:
+  - `git fetch --all`
+  - `git reset --hard origin/main`
+  - `refresh`
