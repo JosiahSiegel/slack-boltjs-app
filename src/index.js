@@ -1,5 +1,6 @@
 const { App } = require("@slack/bolt");
 const push = require("./commands/github/push");
+const listTargets = require("./commands/github/list_targets");
 const appHome = require("./views/app_home");
 
 const app = new App({
@@ -9,7 +10,12 @@ const app = new App({
 });
 
 // Listen for a slash command invocation
-app.command("/deploy", async ({ command, ack, respond, say }) => {
+app.command("/gh-deploy-targets", async ({ ack, respond }) => {
+  await ack();
+  await listTargets({ respond });
+});
+
+app.command("/gh-deploy", async ({ command, ack, respond, say }) => {
   await ack();
   const force = true;
   await push({ command, respond, say, force });
