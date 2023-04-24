@@ -4,6 +4,10 @@
 [![njsscan sarif](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml)
 [![Codacy Security Scan](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml)
 
+## A secure and simple Bolt app for Slack ChatOps
+
+> App includes basic GitHub push functionality to get you started
+
 - [Bolt getting started guide](https://api.slack.com/start/building/bolt)
 - [Bolt documentation](https://slack.dev/bolt)
 - [Slack app home](https://api.slack.com/apps)
