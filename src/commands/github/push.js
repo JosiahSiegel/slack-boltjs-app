@@ -1,35 +1,30 @@
-const deploy = async ({ context, say }) => {
+const push = async ({ command, respond, say, force }) => {
   try {
-    await branchPush(context, true, say);
+    await branchPush(command, force, respond, say);
   } catch (error) {
-    const message = context.matches[0];
-    await say(`${message} failed`);
+    await respond(`Deploy ${command.text} failed with error: ${error}`);
     console.error(error);
   }
 };
 
-module.exports = deploy;
+module.exports = push;
 
 const branchPushCheckConfiguration = function (
   sourceBranch,
   targetBranch,
-  owner,
-  repo,
+  app,
   token,
   respond
 ) {
   const deployTargets = process.env.GITHUB_DEPLOY_TARGETS.split(",");
-
   if (!token) {
     respond("Missing configuration: GITHUB_TOKEN");
     return false;
   }
-  if (!owner) {
-    respond("Missing configuration: [for :owner/:repo] or GITHUB_OWNER");
-    return false;
-  }
-  if (!repo) {
-    respond("Missing configuration: [for :owner/:repo] or GITHUB_REPO");
+  if (!app) {
+    respond(
+      "Missing configuration: [for :owner/:repo] or GITHUB_OWNER/GITHUB_REPO"
+    );
     return false;
   }
   if (!sourceBranch) {
@@ -54,27 +49,27 @@ const branchPushCheckConfiguration = function (
   return true;
 };
 
-const branchPush = function (context, force, respond) {
+const branchPush = function (command, force, respond, say) {
   const https = require("https");
-
-  const message = context.matches[0]; // full
-  const sourceBranch = context.matches[1]; // sourceBranch
-  const targetBranch = context.matches[2]; // targetBranch
-  const owner = context.matches[3] || process.env.GITHUB_OWNER; // owner
-  const repo = context.matches[4] || process.env.GITHUB_REPO; // repo
+  const data = command.text.split(" ");
+  const sourceBranch = data[0].trim(); // sourceBranch
+  const targetBranch = data[2].trim(); // targetBranch
+  const app =
+    data[4] || `${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}`; // owner
   const token = process.env.GITHUB_TOKEN;
   const api = process.env.GITHUB_API || "api.github.com";
 
-  branchPushCheckConfiguration(
-    sourceBranch,
-    targetBranch,
-    owner,
-    repo,
-    token,
-    respond
-  );
-
-  const app = `${owner}/${repo}`;
+  if (
+    !branchPushCheckConfiguration(
+      sourceBranch,
+      targetBranch,
+      app,
+      token,
+      respond
+    )
+  ) {
+    return;
+  }
 
   const options = {
     hostname: api,
@@ -137,6 +132,7 @@ const branchPush = function (context, force, respond) {
 
         postRes.on("end", () => {
           respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
+          say(`\`deploy ${command.text}\` triggered! :rocket:`);
         });
       });
 
