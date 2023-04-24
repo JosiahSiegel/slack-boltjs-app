@@ -1,13 +1,9 @@
-const deploy = async ({ sourceBranch, targetBranch, owner, repo, say }) => {
+const deploy = async ({ context, say }) => {
   try {
-    say(`${sourceBranch}`);
-    await say(`${sourceBranch}`);
-
-    await branchPush(sourceBranch, targetBranch, owner, repo, true, say);
+    await branchPush(context, true, say);
   } catch (error) {
-    const sourceBranch = context.matches[1];
-    const targetBranch = context.matches[2];
-    await say(`${sourceBranch} failed`);
+    const message = context.matches[0];
+    await say(`${message} failed`);
     console.error(error);
   }
 };
@@ -17,11 +13,11 @@ module.exports = deploy;
 const branchPushCheckConfiguration = function (
   sourceBranch,
   targetBranch,
+  owner,
+  repo,
+  token,
   respond
 ) {
-  const token = process.env.GITHUB_TOKEN;
-  const owner = context.match[3] || process.env.GITHUB_OWNER;
-  const repo = context.match[4] || process.env.GITHUB_REPO;
   const deployTargets = process.env.GITHUB_DEPLOY_TARGETS.split(",");
 
   if (!token) {
@@ -58,19 +54,25 @@ const branchPushCheckConfiguration = function (
   return true;
 };
 
-const branchPush = function (
-  sourceBranch,
-  targetBranch,
-  owner,
-  repo,
-  force,
-  respond
-) {
+const branchPush = function (context, force, respond) {
   const https = require("https");
-  branchPushCheckConfiguration(sourceBranch, targetBranch, respond);
 
+  const message = context.matches[0]; // full
+  const sourceBranch = context.matches[1]; // sourceBranch
+  const targetBranch = context.matches[2]; // targetBranch
+  const owner = context.matches[3] || process.env.GITHUB_OWNER; // owner
+  const repo = context.matches[4] || process.env.GITHUB_REPO; // repo
   const token = process.env.GITHUB_TOKEN;
   const api = process.env.GITHUB_API || "api.github.com";
+
+  branchPushCheckConfiguration(
+    sourceBranch,
+    targetBranch,
+    owner,
+    repo,
+    token,
+    respond
+  );
 
   const app = `${owner}/${repo}`;
 

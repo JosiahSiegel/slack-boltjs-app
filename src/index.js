@@ -23,12 +23,7 @@ app.message(
   /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i,
   async ({ context, say }) => {
     say("Deploy request received!");
-    say(`${context}`);
-    const sourceBranch = context.match[0];
-    const targetBranch = context.match[2];
-    const owner = context.match[3] || process.env.GITHUB_OWNER;
-    const repo = context.match[4] || process.env.GITHUB_REPO;
-    deploy({ sourceBranch, targetBranch, owner, repo, say });
+    deploy({ context, say });
   }
 );
 
