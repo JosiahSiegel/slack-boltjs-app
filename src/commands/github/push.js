@@ -41,7 +41,7 @@ const branchPushCheckConfiguration = function (
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
     respond(
-      `\"${targetBranch}\" is not in available target branches. Use \`deploy list targets\``
+      `\"${targetBranch}\" is not in available target branches. Use \`/gh-deploy-targets\``
     );
     return false;
   }
@@ -52,9 +52,9 @@ const branchPushCheckConfiguration = function (
 const branchPush = function (command, force, respond, say) {
   const https = require("https");
   const data = command.text.split(" ");
-  const sourceBranch = data[0].trim(); // sourceBranch
-  const targetBranch = data[2].trim(); // targetBranch
-  const app = data[4] || process.env.GITHUB_REPO; // owner
+  const sourceBranch = data[0].trim();
+  const targetBranch = data[2].trim();
+  const app = process.env.GITHUB_REPO || data[4];
   const token = process.env.GITHUB_TOKEN;
   const api = process.env.GITHUB_API || "api.github.com";
 
@@ -131,7 +131,7 @@ const branchPush = function (command, force, respond, say) {
 
         postRes.on("end", () => {
           respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
-          say(`\`deploy ${command.text}\` triggered! :rocket:`);
+          say(`\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`);
         });
       });
 
