@@ -16,7 +16,7 @@ const branchPushCheckConfiguration = function (
   token,
   respond
 ) {
-  const deployTargets = process.env.GITHUB_DEPLOY_TARGETS.split(",");
+  const deployTargets = process.env.GITHUB_TARGET_BRANCHES.split(",");
   if (!token) {
     respond("Missing configuration: GITHUB_TOKEN");
     return false;
@@ -35,8 +35,8 @@ const branchPushCheckConfiguration = function (
     respond("Missing <targetBranch>: deploy <sourceBranch> to <targetBranch>");
     return false;
   }
-  if (!process.env.GITHUB_DEPLOY_TARGETS) {
-    respond("Missing configuration: GITHUB_DEPLOY_TARGETS");
+  if (!process.env.GITHUB_TARGET_BRANCHES) {
+    respond("Missing configuration: GITHUB_TARGET_BRANCHES");
     return false;
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
@@ -54,8 +54,7 @@ const branchPush = function (command, force, respond, say) {
   const data = command.text.split(" ");
   const sourceBranch = data[0].trim(); // sourceBranch
   const targetBranch = data[2].trim(); // targetBranch
-  const app =
-    data[4] || `${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}`; // owner
+  const app = data[4] || process.env.GITHUB_REPO; // owner
   const token = process.env.GITHUB_TOKEN;
   const api = process.env.GITHUB_API || "api.github.com";
 
