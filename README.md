@@ -1,22 +1,22 @@
 # Slack-Bolt
 
-[![CodeQL](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codeql.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codeql.yml)
-[![njsscan sarif](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml)
-[![Codacy Security Scan](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml)
+[![CodeQL](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codeql.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codeql.yml)
+[![njsscan sarif](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/njsscan.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml)
+[![Codacy Security Scan](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codacy.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml)
 
 ![](https://avatars.slack-edge.com/2023-04-24/5159910288243_7af56ae264408f296381_128.png)
 
-## A secure and simple Bolt app for Slack ChatOps
+## A secure and simple Boltjs app for Slack ChatOps
 
 > App includes basic GitHub push functionality to get you started
+
+### Helpful links
 
 - [Bolt getting started guide](https://api.slack.com/start/building/bolt)
 - [Bolt documentation](https://slack.dev/bolt)
 - [Slack app home](https://api.slack.com/apps)
-- [Glitch app](https://glitch.com/~strengthened-literate-country)
-- [GitHub repo](https://github.com/JosiahSiegel/slack-bolt)
 
-## Example Slack app manifest
+### Example Slack app manifest
 
 ```yml
 display_information:
@@ -71,3 +71,8 @@ Tips:
   - `git fetch --all`
   - `git reset --hard origin/main`
   - `refresh`
+
+---
+
+[Glitch](https://glitch.com/~slack-boltjs-app)
+[GitHub](https://github.com/JosiahSiegel/slack-boltjs-app)
