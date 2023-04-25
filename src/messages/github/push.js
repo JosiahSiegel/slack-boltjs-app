@@ -10,6 +10,7 @@ const push = async ({ message, say, force }) => {
 module.exports = push;
 
 const branchPushCheckConfiguration = function (
+  directMention,
   sourceBranch,
   targetBranch,
   app,
@@ -41,7 +42,7 @@ const branchPushCheckConfiguration = function (
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
     say(
-      `\"${targetBranch}\" is not in available target branches. Use \`/gh-deploy-targets\``
+      `\"${targetBranch}\" is not in available target branches. Use:  ${directMention} gh-deploy-targets`
     );
     return false;
   }
@@ -52,14 +53,15 @@ const branchPushCheckConfiguration = function (
 const branchPush = function (command, force, say) {
   const https = require("https");
   const data = command.text.split(" ");
-  const sourceBranch = data[0].trim();
-  const targetBranch = data[2].trim();
-  const app = process.env.GITHUB_REPO || data[4];
+  const directMention = data[0].trim();
+  const sourceBranch = data[2].trim();
+  const targetBranch = data[4].trim();
+  const app = process.env.GITHUB_REPO || data[6];
   const token = process.env.GITHUB_TOKEN;
   const api = process.env.GITHUB_API || "api.github.com";
 
   if (
-    !branchPushCheckConfiguration(sourceBranch, targetBranch, app, token, say)
+    !branchPushCheckConfiguration(directMention, sourceBranch, targetBranch, app, token, say)
   ) {
     return;
   }

@@ -29,7 +29,7 @@ app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
 });
 
-app.message(directMention(), "gh-deploy-targets", async ({ say }) => {
+app.message(directMention(), "gh-targets", async ({ say }) => {
   listTargetsMessage({ say });
 });
 
