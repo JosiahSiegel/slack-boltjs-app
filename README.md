@@ -65,6 +65,7 @@ settings:
 
 Tips:
 
+- If there are [external users](https://slack.com/help/articles/115004151203-Slack-Connect-guide--work-with-external-organizations) in your workspace, add an `app.message` equivalent for any `app.command`.
 - Check vulnerabilities: `npm audit`
 - Fix Glitch out of sync with repo:
   - `git pull`
