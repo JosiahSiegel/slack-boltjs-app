@@ -1,6 +1,14 @@
-const { App } = require("@slack/bolt");
+const { App, directMention } = require("@slack/bolt");
+
+// Commands
 const push = require("./commands/github/push");
 const listTargets = require("./commands/github/list_targets");
+
+// Messages
+const pushMessage = require("./messages/github/push");
+const listTargetsMessage = require("./messages/github/list_targets");
+
+// Events
 const appHome = require("./views/app_home");
 
 const app = new App({
@@ -9,9 +17,25 @@ const app = new App({
   socketMode: true,
 });
 
-// This will match any message that contains 👋
-app.message(':wave:', async ({ message, say }) => {
+// Listener middleware that filters out messages with 'bot_message' subtype
+async function noBotMessages({ message, next }) {
+  if (!message.subtype || message.subtype !== "bot_message") {
+    await next();
+  }
+}
+
+// Listen for direct messages
+app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
+});
+
+app.message(directMention(), "gh-targets", async ({ say }) => {
+  listTargetsMessage({ say });
+});
+
+app.message(directMention(), "gh-deploy", async ({ message, say }) => {
+  const force = true;
+  await pushMessage({ message, say, force });
 });
 
 // Listen for a slash command invocation
