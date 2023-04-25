@@ -1,10 +1,12 @@
-# Slack-Bolt
+# Slack-Boltjs-App
 
 [![CodeQL](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codeql.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codeql.yml)
 [![njsscan sarif](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/njsscan.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml)
 [![Codacy Security Scan](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codacy.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml)
 
 ![](https://avatars.slack-edge.com/2023-04-24/5159910288243_7af56ae264408f296381_128.png)
+
+<a href="https://glitch.com/edit/#!/remix/slack-boltjs-app"><img alt="Remix on Glitch" src="https://cdn.gomix.com/f3620a78-0ad3-4f81-a271-c8a4faa20f86%2Fremix-button.svg"></a>
 
 ## A secure and simple Boltjs app for Slack ChatOps
 
