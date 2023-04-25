@@ -1,6 +1,7 @@
-const { App } = require("@slack/bolt");
+const { App, directMention } = require("@slack/bolt");
 const push = require("./commands/github/push");
 const listTargets = require("./commands/github/list_targets");
+const pushMessage = require("./messages/github/push");
 const appHome = require("./views/app_home");
 
 const app = new App({
@@ -9,8 +10,15 @@ const app = new App({
   socketMode: true,
 });
 
+// Listener middleware that filters out messages with 'bot_message' subtype
+async function noBotMessages({ message, next }) {
+  if (!message.subtype || message.subtype !== "bot_message") {
+    await next();
+  }
+}
+
 // This will match any message that contains 👋
-app.message(':wave:', async ({ message, say }) => {
+app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
 });
 
