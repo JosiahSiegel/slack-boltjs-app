@@ -15,7 +15,7 @@
     "npm": "^7"
   },
   "repository": {
-    "url": "https://github.com/JosiahSiegel/slack-bolt"
+    "url": "https://github.com/JosiahSiegel/slack-boltjs-app"
   },
   "license": "MIT"
 }
