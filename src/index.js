@@ -9,10 +9,15 @@ const app = new App({
   socketMode: true,
 });
 
+// This will match any message that contains 👋
+app.message(':wave:', async ({ message, say }) => {
+  await say(`Hello, <@${message.user}>`);
+});
+
 // Listen for a slash command invocation
 app.command("/gh-deploy-targets", async ({ ack, respond }) => {
   await ack();
-  await listTargets({ respond });
+  listTargets({ respond });
 });
 
 app.command("/gh-deploy", async ({ command, ack, respond, say }) => {

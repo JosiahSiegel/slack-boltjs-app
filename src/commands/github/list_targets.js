@@ -5,7 +5,6 @@ const list_targets = async ({ respond }) => {
       "No targets branches defined. Set GITHUB_TARGET_BRANCHES first."
     );
   } else {
-    respond("Available Target Branches");
     return Array.from(deployTargets).map((target) => respond(`- ${target}`));
   }
 };
