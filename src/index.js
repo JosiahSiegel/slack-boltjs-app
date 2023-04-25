@@ -2,6 +2,7 @@ const { App, directMention } = require("@slack/bolt");
 const push = require("./commands/github/push");
 const listTargets = require("./commands/github/list_targets");
 const pushMessage = require("./messages/github/push");
+const listTargetsMessage = require("./messages/github/list_targets");
 const appHome = require("./views/app_home");
 
 const app = new App({
@@ -17,9 +18,13 @@ async function noBotMessages({ message, next }) {
   }
 }
 
-// This will match any message that contains 👋
+// Listen for direct messages
 app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
+});
+
+app.message(directMention(), "gh-deploy-targets", async ({ say }) => {
+  listTargetsMessage({ say });
 });
 
 // Listen for a slash command invocation
