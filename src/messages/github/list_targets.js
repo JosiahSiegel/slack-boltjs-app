@@ -5,8 +5,8 @@ const list_targets = async ({ say }) => {
       "No targets branches defined. Set GITHUB_TARGET_BRANCHES first."
     );
   } else {
-    var MyList = "<ul><li>"+ deployTargets.join("</li><li>") + "</li></ul>";
-    return say(MyList);
+    var targets = "- " + deployTargets.join("\n- ");
+    return say(targets);
   }
 };
 

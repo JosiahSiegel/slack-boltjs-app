@@ -5,7 +5,8 @@ const list_targets = async ({ respond }) => {
       "No targets branches defined. Set GITHUB_TARGET_BRANCHES first."
     );
   } else {
-    return Array.from(deployTargets).map((target) => respond(`- ${target}`));
+    var targets = "- " + deployTargets.join("\n- ");
+    return respond(targets);
   }
 };
 
