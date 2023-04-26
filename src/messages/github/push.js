@@ -42,7 +42,7 @@ const branchPushCheckConfiguration = function (
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
     say(
-      `\"${targetBranch}\" is not in available target branches. Use:  ${directMention} gh-deploy-targets`
+      `\"${targetBranch}\" is not in available target branches. Use:  ${directMention} gh-targets`
     );
     return false;
   }
