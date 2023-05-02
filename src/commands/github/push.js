@@ -131,7 +131,9 @@ const branchPush = function (command, force, respond, say) {
 
         postRes.on("end", () => {
           respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
-          say(`\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`);
+          say(
+            `\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`
+          );
         });
       });
 

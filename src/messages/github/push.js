@@ -61,7 +61,14 @@ const branchPush = function (command, force, say) {
   const api = process.env.GITHUB_API || "api.github.com";
 
   if (
-    !branchPushCheckConfiguration(directMention, sourceBranch, targetBranch, app, token, say)
+    !branchPushCheckConfiguration(
+      directMention,
+      sourceBranch,
+      targetBranch,
+      app,
+      token,
+      say
+    )
   ) {
     return;
   }
