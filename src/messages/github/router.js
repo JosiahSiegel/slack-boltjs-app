@@ -1,5 +1,6 @@
 const pushMessage = require("./push");
 const listTargetsMessage = require("./list_targets");
+const runWorkflow = require("./run_workflow");
 
 const router = async ({ message, say }) => {
   try {
@@ -13,6 +14,9 @@ const router = async ({ message, say }) => {
         break;
       case "targets":
         await listTargetsMessage({ say });
+        break;
+      case "run":
+        await runWorkflow({ message, say });
         break;
       default:
         await say(`Invalid command :(: ${ghCommand}`);
