@@ -1,8 +1,10 @@
-const push = async ({ message, say, force }) => {
+const request = require("./utils/request");
+
+const push = async ({ args, api, say, force }) => {
   try {
-    await branchPush(message, force, say);
+    branchPush(args, api, force, say);
   } catch (error) {
-    await say(`Deploy ${message.text} failed with error: ${error}`);
+    await say(`Deploy failed with error: ${error}`);
     console.error(error);
   }
 };
@@ -50,15 +52,13 @@ const branchPushCheckConfiguration = function (
   return true;
 };
 
-const branchPush = function (command, force, say) {
+const branchPush = function (args, api, force, say) {
   const https = require("https");
-  const data = command.text.split(" ");
-  const directMention = data[0].trim();
-  const sourceBranch = data[2].trim();
-  const targetBranch = data[4].trim();
-  const app = process.env.GITHUB_REPO || data[6];
+  const directMention = args[0].trim();
+  const sourceBranch = args[2].trim();
+  const targetBranch = args[4].trim();
+  const app = process.env.GITHUB_REPO || args[6];
   const token = process.env.GITHUB_TOKEN;
-  const api = process.env.GITHUB_API || "api.github.com";
 
   if (
     !branchPushCheckConfiguration(
@@ -91,7 +91,7 @@ const branchPush = function (command, force, say) {
       data += chunk;
     });
 
-    res.on("end", () => {
+    res.on("end", async () => {
       let sha = "";
       try {
         sha = JSON.parse(data).object.sha;
@@ -104,20 +104,6 @@ const branchPush = function (command, force, say) {
         force: force,
       });
 
-      const postOptions = {
-        hostname: api,
-        port: 443,
-        path: `/repos/${app}/git/refs/heads/${targetBranch}`,
-        method: "PUT",
-        headers: {
-          "User-Agent": "request",
-          Authorization: `token ${token}`,
-          "Content-Type": "application/json",
-          "Content-Length": postData.length,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      };
-
       let pushMsg;
       if (force == true) {
         pushMsg = "Force pushed";
@@ -125,23 +111,24 @@ const branchPush = function (command, force, say) {
         pushMsg = "Pushed";
       }
 
-      const postReq = https.request(postOptions, (postRes) => {
-        let postResData = "";
+      let msg = "";
 
-        postRes.on("data", (chunk) => {
-          postResData += chunk;
-        });
-
-        postRes.on("end", () => {
-          say(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
-          say(
-            `\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`
-          );
-        });
+      const path = `/repos/${app}/git/refs/heads/${targetBranch}`;
+      const method = "PATCH";
+      msg = `${pushMsg} commit \`${sha}\` to branch \`${targetBranch}\`\nTriggered deploy \`${sourceBranch}\` to \`${targetBranch}\` for \`${app}\`! :rocket:`;
+      const out = await request({
+        api,
+        path,
+        method,
+        token,
+        data: postData,
+        say,
+        msg,
       });
-
-      postReq.write(postData);
-      postReq.end();
+      if (out) {
+        const json = JSON.parse(out);
+        console.log(json);
+      }
     });
   });
 

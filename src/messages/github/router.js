@@ -4,19 +4,20 @@ const runWorkflow = require("./run_workflow");
 
 const router = async ({ message, say }) => {
   try {
-    const data = message.text.split(" ");
-    const ghCommand = data[1].split("-")[1];
+    const args = message.text.split(" ");
+    const ghCommand = args[1].split("-")[1];
+    const api = process.env.GITHUB_API || "api.github.com";
 
     switch (ghCommand) {
       case "deploy":
         const force = true;
-        await pushMessage({ message, say, force });
+        await pushMessage({ args, api, say, force });
         break;
       case "targets":
         await listTargetsMessage({ say });
         break;
       case "run":
-        await runWorkflow({ message, say });
+        await runWorkflow({ args, api, say });
         break;
       default:
         await say(`Invalid command :(: ${ghCommand}`);
