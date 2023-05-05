@@ -16,7 +16,7 @@ app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
 });
 
-app.message(directMention(), "gh", async ({ message, say }) => {
+app.message(directMention(), "gh-", async ({ message, say }) => {
   await ghRouter({ message, say });
 });
 
