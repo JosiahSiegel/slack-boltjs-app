@@ -12,6 +12,15 @@
 
 > App includes basic GitHub push functionality to get you started
 
+### Quickstart
+
+* `cp .env.example .env`
+  * Update `.env`
+* `cp .help.example .help`
+  * Update `.help`
+* `npm install`
+* `npm start`
+
 ### Helpful links
 
 - [Bolt getting started guide](https://api.slack.com/start/building/bolt)

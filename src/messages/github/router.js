@@ -1,4 +1,4 @@
-const pushMessage = require("./push");
+const push = require("../../utils/github/push");
 const listTargetsMessage = require("./list_targets");
 const runWorkflow = require("./run_workflow");
 
@@ -19,7 +19,7 @@ const router = async ({ message, say }) => {
     switch (ghCommand) {
       case "deploy":
         const force = true;
-        await pushMessage({ args, api, say, force });
+        await push({ args, api, respond:say, say, force, isCommand:false });
         break;
       case "targets":
         await listTargetsMessage({ say });

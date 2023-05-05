@@ -1,10 +1,10 @@
-const request = require("../../utils/github/request");
+const request = require("./request");
 
-const push = async ({ args, api, say, force }) => {
+const push = async ({ args, api, respond, say, force, isCommand }) => {
   try {
-    branchPush(args, api, force, say);
+    branchPush(args, api, force, respond, say, isCommand);
   } catch (error) {
-    await say(`Deploy failed with error: ${error}`);
+    await respond(`Deploy failed with error: ${error}`);
     console.error(error);
   }
 };
@@ -12,39 +12,38 @@ const push = async ({ args, api, say, force }) => {
 module.exports = push;
 
 const branchPushCheckConfiguration = function (
-  directMention,
   sourceBranch,
   targetBranch,
   app,
   token,
-  say
+  respond
 ) {
   const deployTargets = process.env.GITHUB_TARGET_BRANCHES.split(",");
   if (!token) {
-    say("Missing configuration: GITHUB_TOKEN");
+    respond("Missing configuration: GITHUB_TOKEN");
     return false;
   }
   if (!app) {
-    say(
+    respond(
       "Missing configuration: [for :owner/:repo] or GITHUB_OWNER/GITHUB_REPO"
     );
     return false;
   }
   if (!sourceBranch) {
-    say("Missing <sourceBranch>: deploy <sourceBranch> to <targetBranch>");
+    respond("Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>");
     return false;
   }
   if (!targetBranch) {
-    say("Missing <targetBranch>: deploy <sourceBranch> to <targetBranch>");
+    respond("Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>");
     return false;
   }
   if (!process.env.GITHUB_TARGET_BRANCHES) {
-    say("Missing configuration: GITHUB_TARGET_BRANCHES");
+    respond("Missing configuration: GITHUB_TARGET_BRANCHES");
     return false;
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
-    say(
-      `\"${targetBranch}\" is not in available target branches. Use:  ${directMention} gh-targets`
+    respond(
+      `\"${targetBranch}\" is not in available target branches. Use:  <@bot name> gh-targets`
     );
     return false;
   }
@@ -52,22 +51,29 @@ const branchPushCheckConfiguration = function (
   return true;
 };
 
-const branchPush = function (args, api, force, say) {
+const branchPush = function (args, api, force, respond, say, isCommand) {
   const https = require("https");
-  const directMention = args[0].trim();
-  const sourceBranch = args[2].trim();
-  const targetBranch = args[4].trim();
-  const app = process.env.GITHUB_REPO || args[6];
+  let sourceBranch;
+  let targetBranch;
+  let app;
+  if (isCommand) {
+    sourceBranch = args[0];
+    targetBranch = args[2];
+    app = process.env.GITHUB_REPO || args[4];
+  } else {
+    sourceBranch = args[2];
+    targetBranch = args[4];
+    app = process.env.GITHUB_REPO || args[6];
+  }
   const token = process.env.GITHUB_TOKEN;
 
   if (
     !branchPushCheckConfiguration(
-      directMention,
       sourceBranch,
       targetBranch,
       app,
       token,
-      say
+      respond
     )
   ) {
     return;
@@ -115,7 +121,6 @@ const branchPush = function (args, api, force, say) {
 
       const path = `/repos/${app}/git/refs/heads/${targetBranch}`;
       const method = "PATCH";
-      msg = `${pushMsg} commit \`${sha}\` to branch \`${targetBranch}\`\nTriggered deploy \`${sourceBranch}\` to \`${targetBranch}\` for \`${app}\`! :rocket:`;
       const out = await request({
         api,
         path,
@@ -123,11 +128,15 @@ const branchPush = function (args, api, force, say) {
         token,
         data: postData,
         say,
-        msg,
+        msg: "",
       });
       if (out) {
         const json = JSON.parse(out);
         console.log(json);
+        respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
+        say(
+          `\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`
+        );
       }
     });
   });
