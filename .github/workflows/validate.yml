@@ -1,0 +1,18 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  run_docker:
+    runs-on: ubuntu-latest
+    name: Run Docker
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo "${{ secrets.ENV }}" > .env
+          make
+        shell: bash
