@@ -22,7 +22,7 @@ app.message(directMention(), "gh-", async ({ message, say }) => {
 
 app.message(directMention(), "help", async ({ say }) => {
   var fs = require("fs"),
-    filename = "help.txt";
+    filename = ".help";
   fs.readFile(filename, "utf8", function (err, data) {
     if (err) throw err;
     say(data);
