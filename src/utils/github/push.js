@@ -1,8 +1,10 @@
-const push = async ({ command, respond, say, force }) => {
+const request = require("./request");
+
+const push = async ({ args, api, respond, say, force, isCommand }) => {
   try {
-    await branchPush(command, force, respond, say);
+    branchPush(args, api, force, respond, say, isCommand);
   } catch (error) {
-    await respond(`Deploy ${command.text} failed with error: ${error}`);
+    await respond(`Deploy failed with error: ${error}`);
     console.error(error);
   }
 };
@@ -28,11 +30,11 @@ const branchPushCheckConfiguration = function (
     return false;
   }
   if (!sourceBranch) {
-    respond("Missing <sourceBranch>: deploy <sourceBranch> to <targetBranch>");
+    respond("Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>");
     return false;
   }
   if (!targetBranch) {
-    respond("Missing <targetBranch>: deploy <sourceBranch> to <targetBranch>");
+    respond("Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>");
     return false;
   }
   if (!process.env.GITHUB_TARGET_BRANCHES) {
@@ -41,7 +43,7 @@ const branchPushCheckConfiguration = function (
   }
   if (!Array.from(deployTargets).includes(targetBranch)) {
     respond(
-      `\"${targetBranch}\" is not in available target branches. Use \`/gh-deploy-targets\``
+      `\"${targetBranch}\" is not in available target branches. Use:  <@bot name> gh-targets`
     );
     return false;
   }
@@ -49,14 +51,21 @@ const branchPushCheckConfiguration = function (
   return true;
 };
 
-const branchPush = function (command, force, respond, say) {
+const branchPush = function (args, api, force, respond, say, isCommand) {
   const https = require("https");
-  const data = command.text.split(" ");
-  const sourceBranch = data[0].trim();
-  const targetBranch = data[2].trim();
-  const app = process.env.GITHUB_REPO || data[4];
+  let sourceBranch;
+  let targetBranch;
+  let app;
+  if (isCommand) {
+    sourceBranch = args[0];
+    targetBranch = args[2];
+    app = process.env.GITHUB_REPO || args[4];
+  } else {
+    sourceBranch = args[2];
+    targetBranch = args[4];
+    app = process.env.GITHUB_REPO || args[6];
+  }
   const token = process.env.GITHUB_TOKEN;
-  const api = process.env.GITHUB_API || "api.github.com";
 
   if (
     !branchPushCheckConfiguration(
@@ -88,32 +97,18 @@ const branchPush = function (command, force, respond, say) {
       data += chunk;
     });
 
-    res.on("end", () => {
+    res.on("end", async () => {
       let sha = "";
       try {
         sha = JSON.parse(data).object.sha;
       } catch (error) {
-        respond(`I failed to find branch \"${sourceBranch}\"!`);
+        say(`I failed to find branch \"${sourceBranch}\"!`);
         return;
       }
       const postData = JSON.stringify({
         sha,
         force: force,
       });
-
-      const postOptions = {
-        hostname: api,
-        port: 443,
-        path: `/repos/${app}/git/refs/heads/${targetBranch}`,
-        method: "PUT",
-        headers: {
-          "User-Agent": "request",
-          Authorization: `token ${token}`,
-          "Content-Type": "application/json",
-          "Content-Length": postData.length,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      };
 
       let pushMsg;
       if (force == true) {
@@ -122,21 +117,27 @@ const branchPush = function (command, force, respond, say) {
         pushMsg = "Pushed";
       }
 
-      const postReq = https.request(postOptions, (postRes) => {
-        let postResData = "";
+      let msg = "";
 
-        postRes.on("data", (chunk) => {
-          postResData += chunk;
-        });
-
-        postRes.on("end", () => {
-          respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
-          say(`\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`);
-        });
+      const path = `/repos/${app}/git/refs/heads/${targetBranch}`;
+      const method = "PATCH";
+      const out = await request({
+        api,
+        path,
+        method,
+        token,
+        data: postData,
+        say,
+        msg: "",
       });
-
-      postReq.write(postData);
-      postReq.end();
+      if (out) {
+        const json = JSON.parse(out);
+        console.log(json);
+        respond(`${pushMsg} commit \"${sha}\" to branch \"${targetBranch}\"`);
+        say(
+          `\`deploy ${sourceBranch} to ${targetBranch} for ${app}\` triggered! :rocket:`
+        );
+      }
     });
   });
 

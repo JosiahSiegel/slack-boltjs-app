@@ -1,14 +1,8 @@
 const { App, directMention } = require("@slack/bolt");
 
-// Commands
-const push = require("./commands/github/push");
-const listTargets = require("./commands/github/list_targets");
-
-// Messages
-const pushMessage = require("./messages/github/push");
-const listTargetsMessage = require("./messages/github/list_targets");
-
-// Events
+const push = require("./utils/github/push");
+const listTargets = require("./messages/github/list_targets");
+const ghRouter = require("./messages/github/router");
 const appHome = require("./views/app_home");
 
 const app = new App({
@@ -17,37 +11,36 @@ const app = new App({
   socketMode: true,
 });
 
-// Listener middleware that filters out messages with 'bot_message' subtype
-async function noBotMessages({ message, next }) {
-  if (!message.subtype || message.subtype !== "bot_message") {
-    await next();
-  }
-}
-
 // Listen for direct messages
 app.message(directMention(), ":wave:", async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`);
 });
 
-app.message(directMention(), "gh-targets", async ({ say }) => {
-  listTargetsMessage({ say });
+app.message(directMention(), "gh-", async ({ message, say }) => {
+  await ghRouter({ message, say });
 });
 
-app.message(directMention(), "gh-deploy", async ({ message, say }) => {
-  const force = true;
-  await pushMessage({ message, say, force });
+app.message(directMention(), "help", async ({ say }) => {
+  var fs = require("fs"),
+    filename = ".help";
+  fs.readFile(filename, "utf8", function (err, data) {
+    if (err) throw err;
+    say(data);
+  });
 });
 
 // Listen for a slash command invocation
 app.command("/gh-deploy-targets", async ({ ack, respond }) => {
   await ack();
-  listTargets({ respond });
+  listTargets({ say: respond });
 });
 
 app.command("/gh-deploy", async ({ command, ack, respond, say }) => {
   await ack();
   const force = true;
-  await push({ command, respond, say, force });
+  const args = command.text.split(" ");
+  const api = process.env.GITHUB_API || "api.github.com";
+  await push({ args, api, respond, say, force, isCommand: true });
 });
 
 // Listen for users opening App Home
