@@ -1,0 +1,68 @@
+name: Validate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run_docker:
+    runs-on: ubuntu-latest
+    name: Run Docker
+    outputs:
+      chat_ok1: ${{ steps.validate_bot.outputs.chat_ok1 }}
+      chat_ok2: ${{ steps.validate_bot.outputs.chat_ok2 }}
+      chat_ok3: ${{ steps.validate_bot.outputs.chat_ok3 }}
+      chat_ok4: ${{ steps.validate_bot.outputs.chat_ok4 }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and run Docker
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+          cp .help.example .help
+          make
+        shell: bash
+      - name: Validate bot
+        id: validate_bot
+        run: |
+          sleep 5
+
+          ok1=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} :wave:" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
+          -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
+          -X POST https://slack.com/api/chat.postMessage | jq .ok)
+
+          sleep 5
+          ok2=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} gh-targets" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
+          -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
+          -X POST https://slack.com/api/chat.postMessage | jq .ok)
+
+          sleep 5
+          ok3=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} gh-deploy main to dummy" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
+          -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
+          -X POST https://slack.com/api/chat.postMessage | jq .ok)
+
+          sleep 5
+          ok4=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} help" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
+          -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
+          -X POST https://slack.com/api/chat.postMessage | jq .ok)
+
+          sleep 5
+
+          echo "chat_ok1=$ok1" >> $GITHUB_OUTPUT
+          echo "chat_ok2=$ok2" >> $GITHUB_OUTPUT
+          echo "chat_ok3=$ok3" >> $GITHUB_OUTPUT
+          echo "chat_ok4=$ok4" >> $GITHUB_OUTPUT
+        shell: bash
+
+  fail_check:
+    needs:
+      - run_docker
+    if: |
+      needs.run_docker.outputs.chat_ok1 != 'true' ||
+      needs.run_docker.outputs.chat_ok2 != 'true' ||
+      needs.run_docker.outputs.chat_ok3 != 'true' ||
+      needs.run_docker.outputs.chat_ok4 != 'true'
+    runs-on: ubuntu-latest
+    name: Fail check
+    steps:
+      - run: exit 1
