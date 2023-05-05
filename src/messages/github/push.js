@@ -1,4 +1,4 @@
-const request = require("./utils/request");
+const request = require("../../utils/github/request");
 
 const push = async ({ args, api, say, force }) => {
   try {

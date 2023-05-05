@@ -1,5 +1,5 @@
-const defaultBranch = require("./utils/default_branch");
-const request = require("./utils/request");
+const defaultBranch = require("../../utils/github/default_branch");
+const request = require("../../utils/github/request");
 
 const run_workflow = async ({ args, api, say, inputs }) => {
   try {
