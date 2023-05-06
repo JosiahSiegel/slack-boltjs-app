@@ -1,31 +1,19 @@
 import https from "https";
-const request = async function ({ api, path, method, token, data, say, msg }) {
-  const out = httpsRequest(api, path, method, token, data, say, msg)
-    .then((json) => {
-      return json;
-    })
-    .catch((e) => {
-      console.error(`error: ${e}`);
-    });
 
-  const getPromise = async () => {
-    const a = await out;
-    return a;
-  };
-
-  const b = await getPromise();
-  return b;
+const request = async ({ api, path, method, token, data, say, msg }) => {
+  const json = await httpsRequest(api, path, method, token, data, say, msg);
+  return json;
 };
 
 export default request;
 
-function httpsRequest(api, path, method, token, data, say, msg) {
+const httpsRequest = (api, path, method, token, data, say, msg) => {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: api,
       port: 443,
-      path: path,
-      method: method,
+      path,
+      method,
       headers: {
         "User-Agent": "request",
         Authorization: `token ${token}`,
@@ -33,15 +21,15 @@ function httpsRequest(api, path, method, token, data, say, msg) {
         "X-GitHub-Api-Version": "2022-11-28",
       },
     };
-    const req = https.request(options, (res) => {
+    const req = https.request(options, async (res) => {
       let body = "";
       res.on("data", (chunk) => {
         body += chunk;
       });
-      res.on("end", () => {
+      res.on("end", async () => {
         resolve(body);
         if (msg) {
-          say(msg);
+          await say(msg);
         }
       });
     });
@@ -53,4 +41,4 @@ function httpsRequest(api, path, method, token, data, say, msg) {
     }
     req.end();
   });
-}
+};
