@@ -23,7 +23,7 @@ app.message(directMention(), "gh-", async ({ message, say }) => {
 });
 
 app.message(directMention(), "help", async ({ say }) => {
-  var filename = ".help";
+  const filename = ".help";
   fs.readFile(filename, "utf8", function (err, data) {
     if (err) throw err;
     say(data);
@@ -45,8 +45,8 @@ app.command("/gh-deploy", async ({ command, ack, respond, say }) => {
 });
 
 // Listen for users opening App Home
-app.event("app_home_opened", async ({ event, client, context }) => {
-  appHome({ event, client, context });
+app.event("app_home_opened", async ({ event, client }) => {
+  appHome({ event, client });
 });
 
 (async () => {

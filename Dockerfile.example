@@ -3,6 +3,6 @@ FROM node:16.20.0-slim
 WORKDIR /usr/app
 COPY --chown=node:node ./ ./
 RUN npm install
-USER node
+#USER node
 
 CMD ["npm", "start"]

@@ -18,5 +18,9 @@
   "repository": {
     "url": "https://github.com/JosiahSiegel/slack-boltjs-app"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "8.40.0",
+    "eslint-config-eslint": "^7.0.0"
+  }
 }
