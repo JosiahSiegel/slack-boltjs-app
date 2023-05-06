@@ -1,4 +1,5 @@
-const request = require("./request");
+import request from "./request.js";
+import https from "https";
 
 const push = async ({ args, api, respond, say, force, isCommand }) => {
   try {
@@ -9,7 +10,7 @@ const push = async ({ args, api, respond, say, force, isCommand }) => {
   }
 };
 
-module.exports = push;
+export default push;
 
 const branchPushCheckConfiguration = function (
   sourceBranch,
@@ -52,7 +53,6 @@ const branchPushCheckConfiguration = function (
 };
 
 const branchPush = function (args, api, force, respond, say, isCommand) {
-  const https = require("https");
   let sourceBranch;
   let targetBranch;
   let app;

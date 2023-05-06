@@ -1,6 +1,6 @@
-const push = require("../../utils/github/push");
-const listTargetsMessage = require("./list_targets");
-const runWorkflow = require("./run_workflow");
+import push from "../../utils/github/push.js";
+import listTargetsMessage from "./list_targets.js";
+import runWorkflow from "./run_workflow.js";
 
 const router = async ({ message, say }) => {
   let args = message.text.split(" ");
@@ -36,4 +36,4 @@ const router = async ({ message, say }) => {
   }
 };
 
-module.exports = router;
+export default router;

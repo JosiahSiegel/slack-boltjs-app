@@ -30,4 +30,4 @@ const appHome = async ({ event, client, context }) => {
   }
 };
 
-module.exports = appHome;
+export default appHome;

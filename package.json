@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A secure and simple Bolt app for Slack ChatOps",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "node -r dotenv/config src/index.js"
   },

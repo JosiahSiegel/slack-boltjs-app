@@ -1,5 +1,5 @@
-const defaultBranch = require("../../utils/github/default_branch");
-const request = require("../../utils/github/request");
+import defaultBranch from "../../utils/github/default_branch.js";
+import request from "../../utils/github/request.js";
 
 const run_workflow = async ({ args, api, say, inputs }) => {
   try {
@@ -42,4 +42,4 @@ const run_workflow = async ({ args, api, say, inputs }) => {
   }
 };
 
-module.exports = run_workflow;
+export default run_workflow;
