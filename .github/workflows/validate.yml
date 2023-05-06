@@ -12,11 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Docker
     outputs:
-      chat_ok1: ${{ steps.validate_bot.outputs.chat_ok1 }}
-      chat_ok2: ${{ steps.validate_bot.outputs.chat_ok2 }}
-      chat_ok3: ${{ steps.validate_bot.outputs.chat_ok3 }}
-      chat_ok4: ${{ steps.validate_bot.outputs.chat_ok4 }}
-      chat_ok5: ${{ steps.validate_bot.outputs.chat_ok5 }}
+      result: ${{ steps.validate_bot.outputs.result }}
     steps:
       - uses: actions/checkout@v3
       - name: Build and run Docker
@@ -29,33 +25,37 @@ jobs:
         id: validate_bot
         run: |
           # Define a function to send a message to Slack and store the result
+          out=true;
+          
           send_message() {
             text=$1
             ok=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} $text" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
             -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
             -X POST https://slack.com/api/chat.postMessage | jq .ok)
-            echo "chat_ok$2=$ok" >> $GITHUB_OUTPUT
+
+            if [ "$ok" = false ] ; then
+              out=false;
+            fi
           }
 
           # Loop through the messages and call the function with a counter
-          messages=(":wave:" "gh-targets" "gh-deploy main to dummy" "help" "gh-run confirm_run.yml --inputs choice_name:choice2")
+          messages=(":wave:" "gh-targets" "gh-deploy main to dummy" "help" \
+          "gh-run confirm_run.yml --inputs choice_name:choice2" "gh-run confirm_run.yml")
           counter=1
           for message in "${messages[@]}"; do
             send_message "$message" "$counter"
             sleep 5
             ((counter++))
           done
+
+          echo "result=$out" >> $GITHUB_OUTPUT
         shell: bash
 
   no_fail_check:
     needs:
       - run_docker
     if: |
-      needs.run_docker.outputs.chat_ok1 == 'true' &&
-      needs.run_docker.outputs.chat_ok2 == 'true' &&
-      needs.run_docker.outputs.chat_ok3 == 'true' &&
-      needs.run_docker.outputs.chat_ok4 == 'true' &&
-      needs.run_docker.outputs.chat_ok5 == 'true'
+      needs.run_docker.outputs.result == 'true'
     runs-on: ubuntu-latest
     name: Validate - No failure
     steps:

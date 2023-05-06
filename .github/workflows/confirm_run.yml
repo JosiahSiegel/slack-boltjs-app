@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
     inputs:
       choice_name:
-        required: true
         options:
         - choice1
         - choice2
