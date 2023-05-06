@@ -2,7 +2,7 @@
 
 [![CodeQL](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codeql.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codeql.yml)
 [![njsscan sarif](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/njsscan.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/njsscan.yml)
-[![Codacy Security Scan](https://github.com/JosiahSiegel/slack-boltjs-app/actions/workflows/codacy.yml/badge.svg)](https://github.com/JosiahSiegel/slack-bolt/actions/workflows/codacy.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f3ee15eaf3f4c81915d658008e01c3f)](https://app.codacy.com/gh/JosiahSiegel/slack-boltjs-app/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ![](https://avatars.slack-edge.com/2023-04-24/5159910288243_7af56ae264408f296381_128.png)
 
