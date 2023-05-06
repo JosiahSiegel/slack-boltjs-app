@@ -1,15 +1,11 @@
-const request = require("./request");
+import request from "./request.js";
+import https from "https";
 
 const push = async ({ args, api, respond, say, force, isCommand }) => {
-  try {
-    branchPush(args, api, force, respond, say, isCommand);
-  } catch (error) {
-    await respond(`Deploy failed with error: ${error}`);
-    console.error(error);
-  }
+  branchPush(args, api, force, respond, say, isCommand);
 };
 
-module.exports = push;
+export default push;
 
 const branchPushCheckConfiguration = function (
   sourceBranch,
@@ -30,11 +26,15 @@ const branchPushCheckConfiguration = function (
     return false;
   }
   if (!sourceBranch) {
-    respond("Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>");
+    respond(
+      "Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>"
+    );
     return false;
   }
   if (!targetBranch) {
-    respond("Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>");
+    respond(
+      "Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>"
+    );
     return false;
   }
   if (!process.env.GITHUB_TARGET_BRANCHES) {
@@ -52,7 +52,6 @@ const branchPushCheckConfiguration = function (
 };
 
 const branchPush = function (args, api, force, respond, say, isCommand) {
-  const https = require("https");
   let sourceBranch;
   let targetBranch;
   let app;
@@ -116,8 +115,6 @@ const branchPush = function (args, api, force, respond, say, isCommand) {
       } else {
         pushMsg = "Pushed";
       }
-
-      let msg = "";
 
       const path = `/repos/${app}/git/refs/heads/${targetBranch}`;
       const method = "PATCH";

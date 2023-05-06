@@ -13,7 +13,6 @@
 > App includes basic GitHub push functionality to get you started
 
 ### Quickstart
-
 * `cp .env.example .env`
   * Update `.env`
 * `cp .help.example .help`
@@ -23,9 +22,9 @@
 
 ### Helpful links
 
-- [Bolt getting started guide](https://api.slack.com/start/building/bolt)
-- [Bolt documentation](https://slack.dev/bolt)
-- [Slack app home](https://api.slack.com/apps)
+* [Bolt getting started guide](https://api.slack.com/start/building/bolt)
+* [Bolt documentation](https://slack.dev/bolt)
+* [Slack app home](https://api.slack.com/apps)
 
 ### Example Slack app manifest
 
@@ -74,17 +73,19 @@ settings:
 
 Tips:
 
-- If there are [external users](https://slack.com/help/articles/115004151203-Slack-Connect-guide--work-with-external-organizations) in your workspace, add an `app.message` equivalent for any `app.command`.
-- Check vulnerabilities: `npm audit`
-- Fix Glitch out of sync with repo:
-  - `git pull`
-  - `refresh`
-- Hard refresh Glitch from repo:
-  - `git fetch --all`
-  - `git reset --hard origin/main`
-  - `refresh`
+* For [external workspace users][1], add an `app.message` per `app.command`.
+* Check vulnerabilities: `npm audit`
+* Fix Glitch out of sync with repo:
+  * `git pull`
+  * `refresh`
+* Hard refresh Glitch from repo:
+  * `git fetch --all`
+  * `git reset --hard origin/main`
+  * `refresh`
 
 ---
 
 [Glitch](https://glitch.com/~slack-boltjs-app)
 [GitHub](https://github.com/JosiahSiegel/slack-boltjs-app)
+
+[1]: https://slack.com/help/articles/115004151203-Slack-Connect-guide--work-with-external-organizations

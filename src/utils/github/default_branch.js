@@ -1,4 +1,4 @@
-const request = require("./request");
+import request from "./request.js";
 
 const default_branch = async function ({ api, app, token, say, msg }) {
   const path = `/repos/${app}`;
@@ -9,4 +9,4 @@ const default_branch = async function ({ api, app, token, say, msg }) {
   return json.default_branch;
 };
 
-module.exports = default_branch;
+export default default_branch;

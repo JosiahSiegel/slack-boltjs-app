@@ -1,7 +1,7 @@
-const appHome = async ({ event, client, context }) => {
+const appHome = async ({ event, client }) => {
   try {
     /* view.publish is the method that your app uses to push a view to the Home tab */
-    const result = await client.views.publish({
+    await client.views.publish({
       /* the user that opened your app's app home */
       user_id: event.user,
 
@@ -30,4 +30,4 @@ const appHome = async ({ event, client, context }) => {
   }
 };
 
-module.exports = appHome;
+export default appHome;

@@ -10,4 +10,4 @@ const list_targets = async ({ say }) => {
   }
 };
 
-module.exports = list_targets;
+export default list_targets;

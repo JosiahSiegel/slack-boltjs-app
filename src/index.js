@@ -1,9 +1,11 @@
-const { App, directMention } = require("@slack/bolt");
+import boltjs from '@slack/bolt';
+const { App, directMention } = boltjs;
+import fs from "fs";
 
-const push = require("./utils/github/push");
-const listTargets = require("./messages/github/list_targets");
-const ghRouter = require("./messages/github/router");
-const appHome = require("./views/app_home");
+import push from "./utils/github/push.js";
+import listTargets from "./messages/github/list_targets.js";
+import ghRouter from "./messages/github/router.js";
+import appHome from "./views/app_home.js";
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -21,8 +23,7 @@ app.message(directMention(), "gh-", async ({ message, say }) => {
 });
 
 app.message(directMention(), "help", async ({ say }) => {
-  var fs = require("fs"),
-    filename = ".help";
+  const filename = ".help";
   fs.readFile(filename, "utf8", function (err, data) {
     if (err) throw err;
     say(data);
@@ -44,8 +45,8 @@ app.command("/gh-deploy", async ({ command, ack, respond, say }) => {
 });
 
 // Listen for users opening App Home
-app.event("app_home_opened", async ({ event, client, context }) => {
-  appHome({ event, client, context });
+app.event("app_home_opened", async ({ event, client }) => {
+  appHome({ event, client });
 });
 
 (async () => {

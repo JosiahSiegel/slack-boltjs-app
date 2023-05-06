@@ -1,3 +1,4 @@
+import https from "https";
 const request = async function ({ api, path, method, token, data, say, msg }) {
   const out = httpsRequest(api, path, method, token, data, say, msg)
     .then((json) => {
@@ -16,10 +17,9 @@ const request = async function ({ api, path, method, token, data, say, msg }) {
   return b;
 };
 
-module.exports = request;
+export default request;
 
 function httpsRequest(api, path, method, token, data, say, msg) {
-  const https = require("https");
   return new Promise((resolve, reject) => {
     const options = {
       hostname: api,
