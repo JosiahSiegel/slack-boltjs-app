@@ -39,14 +39,6 @@ features:
   bot_user:
     display_name: DevBot
     always_online: true
-  slash_commands:
-    - command: /gh-deploy
-      description: Overwrite target branch with source branch
-      usage_hint: <sourceBranch> to <targetBranch> for <repo>
-      should_escape: false
-    - command: /gh-deploy-targets
-      description: List available target branches
-      should_escape: false
 oauth_config:
   scopes:
     bot:

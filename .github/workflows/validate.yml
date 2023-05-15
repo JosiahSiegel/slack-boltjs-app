@@ -39,8 +39,9 @@ jobs:
           }
 
           # Loop through the messages and call the function with a counter
-          messages=(":wave:" "gh-targets" "gh-deploy main to dummy" "help" \
-          "gh-run confirm_run.yml --inputs choice_name:choice2" "gh-run confirm_run.yml")
+          messages=(":wave:" "gh-targets" "help" "gh-run confirm_run.yml --inputs choice_name:choice2" \
+          "gh-run confirm_run.yml" "gh-lock add dummy" "gh-deploy main to dummy" "gh-lock show dummy" \
+          "gh-lock remove dummy" "gh-deploy main to dummy")
           counter=1
           for message in "${messages[@]}"; do
             send_message "$message" "$counter"

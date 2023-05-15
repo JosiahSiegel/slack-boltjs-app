@@ -1,14 +1,15 @@
 import request from "./request.js";
 import https from "https";
 
-const push = async ({ args, api, respond, say, force, isCommand }) => {
-  branchPush(args, api, force, respond, say, isCommand);
+const push = async ({ localStorage, args, api, respond, say, force, isCommand }) => {
+  branchPush(localStorage, args, api, force, respond, say, isCommand);
 };
 
 export default push;
 
 // Define a function to check the configuration for branch push
 const branchPushCheckConfiguration = function (
+  localStorage,
   sourceBranch,
   targetBranch,
   app,
@@ -30,11 +31,13 @@ const branchPushCheckConfiguration = function (
       condition: !app,
     },
     {
-      message: "Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>",
+      message:
+        "Missing <sourceBranch>: gh-deploy <sourceBranch> to <targetBranch>",
       condition: !sourceBranch,
     },
     {
-      message: "Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>",
+      message:
+        "Missing <targetBranch>: gh-deploy <sourceBranch> to <targetBranch>",
       condition: !targetBranch,
     },
     {
@@ -53,6 +56,11 @@ const branchPushCheckConfiguration = function (
       respond(error.message);
       return false;
     }
+  }
+
+  if (localStorage.getItem(targetBranch)) {
+    respond(`Branch ${targetBranch} is locked by <@${localStorage.getItem(targetBranch)}>`);
+    return false;
   }
 
   // Return true if no errors are found
@@ -110,13 +118,14 @@ const getSHA = (api, branch) => {
 };
 
 // Define a function to push a branch to another branch
-const branchPush = async (args, api, force, respond, say, isCommand) => {
+const branchPush = async (localStorage, args, api, force, respond, say, isCommand) => {
   // Get the source and target branches from the arguments
   const sourceBranch = isCommand ? args[0] : args[2];
   const targetBranch = isCommand ? args[2] : args[4];
 
   if (
     !branchPushCheckConfiguration(
+      localStorage,
       sourceBranch,
       targetBranch,
       app,
