@@ -1,9 +1,6 @@
 import boltjs from '@slack/bolt';
 const { App, directMention } = boltjs;
 import fs from "fs";
-
-import push from "./utils/github/push.js";
-import listTargets from "./messages/github/list_targets.js";
 import ghRouter from "./messages/github/router.js";
 import appHome from "./views/app_home.js";
 
@@ -28,20 +25,6 @@ app.message(directMention(), "help", async ({ say }) => {
     if (err) throw err;
     say(data);
   });
-});
-
-// Listen for a slash command invocation
-app.command("/gh-deploy-targets", async ({ ack, respond }) => {
-  await ack();
-  listTargets({ say: respond });
-});
-
-app.command("/gh-deploy", async ({ command, ack, respond, say }) => {
-  await ack();
-  const force = true;
-  const args = command.text.split(" ");
-  const api = process.env.GITHUB_API || "api.github.com";
-  await push({ args, api, respond, say, force, isCommand: true });
 });
 
 // Listen for users opening App Home
