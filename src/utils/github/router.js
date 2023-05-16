@@ -2,28 +2,28 @@ import push from "../../utils/github/push.js";
 import listTargets from "./list_targets.js";
 import lockTarget from "./lock_target.js";
 import runWorkflow from "./run_workflow.js";
-import nodeLs from 'node-localstorage';
-const { LocalStorage } = nodeLs;
-var localStorage = new LocalStorage('./src/utils/github/.locks');
+import nodeLs from "node-localstorage";
 
-// Define constants
-const api = process.env.GITHUB_API || "api.github.com";
+const { LocalStorage } = nodeLs;
+const { GITHUB_API } = process.env;
+const localStorage = new LocalStorage("src/.locks");
+const api = GITHUB_API || "api.github.com";
 const force = true;
 
 // Define a function to route the commands
 const router = async ({ message, say }) => {
+  const { text, user } = message;
   // Split the message text by spaces
-  let args = message.text.split(" ");
-  let user = message.user;
+  const args = text.split(" ");
 
   // Check if there are inputs after --inputs flag
   const inputsIndex = args.indexOf("--inputs");
   let inputs;
   if (inputsIndex > -1) {
     // Get the inputs from the message text
-    inputs = message.text.split("--inputs")[1].trim();
+    inputs = text.split("--inputs")[1].trim();
     // Remove the inputs from the args array
-    args = message.text.split("--inputs")[0].trim().split(" ");
+    args.splice(inputsIndex);
   }
 
   // Get the command from the second argument
@@ -33,7 +33,15 @@ const router = async ({ message, say }) => {
     // Execute the command based on a switch statement
     switch (ghCommand) {
       case "deploy":
-        await push({ localStorage, args, api, respond: say, say, force, isCommand: false });
+        await push({
+          localStorage,
+          args,
+          api,
+          respond: say,
+          say,
+          force,
+          isCommand: false,
+        });
         break;
       case "targets":
         await listTargets({ say });
@@ -42,7 +50,7 @@ const router = async ({ message, say }) => {
         await runWorkflow({ args, api, say, inputs });
         break;
       case "lock":
-        await lockTarget({ localStorage, args, say, user});
+        await lockTarget({ localStorage, args, say, user });
         break;
       default:
         await say(`Invalid command :(: ${ghCommand}`);

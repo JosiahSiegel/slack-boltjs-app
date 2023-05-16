@@ -1,7 +1,7 @@
-import boltjs from '@slack/bolt';
+import boltjs from "@slack/bolt";
 const { App, directMention } = boltjs;
 import fs from "fs";
-import ghRouter from "./messages/github/router.js";
+import ghRouter from "./utils/github/router.js";
 import appHome from "./views/app_home.js";
 
 const app = new App({
@@ -10,21 +10,27 @@ const app = new App({
   socketMode: true,
 });
 
-// Listen for direct messages
-app.message(directMention(), ":wave:", async ({ message, say }) => {
-  await say(`Hello, <@${message.user}>`);
-});
-
-app.message(directMention(), "gh-", async ({ message, say }) => {
-  await ghRouter({ message, say });
-});
-
-app.message(directMention(), "help", async ({ say }) => {
-  const filename = ".help";
-  fs.readFile(filename, "utf8", function (err, data) {
-    if (err) throw err;
-    say(data);
-  });
+// Use a single message listener with a switch statement to handle different commands
+app.message(directMention(), async ({ message, say }) => {
+  const command = message.text.split(" ")[1].split("-")[0];
+  switch (command) {
+    case ":wave:":
+      await say(`Hello, <@${message.user}>`);
+      break;
+    case "gh":
+      await ghRouter({ message, say });
+      break;
+    case "help":
+      const filename = ".help";
+      const data = fs.readFileSync(filename, "utf8");
+      say(data);
+      break;
+    default:
+      // Handle unknown commands
+      say(
+        `Sorry, I don't recognize that command. Try typing \`@bot help\` for more information.`
+      );
+  }
 });
 
 // Listen for users opening App Home
@@ -33,9 +39,9 @@ app.event("app_home_opened", async ({ event, client }) => {
 });
 
 (async () => {
-  const port = 3000;
+  const port = process.env.PORT || 3000;
 
   // Start your app
-  await app.start(process.env.PORT || port);
+  await app.start(port);
   console.log(`⚡️ Slack Bolt app is running on port ${port}!`);
 })();
