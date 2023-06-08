@@ -55,9 +55,10 @@ jobs:
   no_fail_check:
     needs:
       - run_docker
-    if: |
-      needs.run_docker.outputs.result == 'true'
     runs-on: ubuntu-latest
     name: Validate - No failure
     steps:
-      - run: echo "Success!"
+      - if: needs.run_docker.outputs.result == 'true'
+        run: echo "Success!"
+      - if: needs.run_docker.outputs.result != 'true'
+        run: exit 1
