@@ -14,7 +14,7 @@ jobs:
     outputs:
       result: ${{ steps.validate_bot.outputs.result }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build and run Docker
         run: |
           echo "${{ secrets.ENV }}" > .env
