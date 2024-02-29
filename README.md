@@ -14,7 +14,7 @@
 
 ### Quickstart
 * `cp .env.example .env`
-  * Update `.env`
+  * Update `.env` ⚠️
 * `cp .help.example .help`
   * Update `.help`
 * `npm install`
