@@ -29,7 +29,7 @@ jobs:
           
           send_message() {
             text=$1
-            ok=$(curl -d "text=${{ secrets.VALIDATE_TEXT }} $text" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
+            ok=$(curl -d "text=<@${{ vars.VALIDATE_BOTID }}> $text" -d "channel=${{ secrets.VALIDATE_CHANNEL }}" \
             -H "Authorization: Bearer ${{ secrets.VALIDATE_TOKEN }}" \
             -X POST https://slack.com/api/chat.postMessage | jq .ok)
 
