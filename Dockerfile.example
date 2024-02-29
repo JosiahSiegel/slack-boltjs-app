@@ -1,8 +1,8 @@
-FROM node:16.20.0-slim
+FROM node:20.11.1-slim
 
 WORKDIR /usr/app
 COPY --chown=node:node ./ ./
-RUN mkdir ./src/.locks  && chown node ./src/.locks
+RUN mkdir -p ./src/.locks && chown node ./src/.locks
 VOLUME /usr/app/src/.locks
 
 RUN npm install

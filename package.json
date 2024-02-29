@@ -1,6 +1,6 @@
 {
   "name": "slack-bolt",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A secure and simple Bolt app for Slack ChatOps",
   "main": "src/index.js",
   "type": "module",
@@ -13,8 +13,8 @@
     "node-localstorage": "^2.2.1"
   },
   "engines": {
-    "node": "^16",
-    "npm": "^7"
+    "node": "^20",
+    "npm": "^10"
   },
   "repository": {
     "url": "https://github.com/JosiahSiegel/slack-boltjs-app"
