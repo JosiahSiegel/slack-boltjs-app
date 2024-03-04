@@ -10,7 +10,7 @@
   "dependencies": {
     "dotenv": "^16",
     "@slack/bolt": "^3.13.1",
-    "node-localstorage": "^2.2.1"
+    "node-localstorage": "^3.0.5"
   },
   "engines": {
     "node": "^20",
